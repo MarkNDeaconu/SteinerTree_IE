@@ -1,0 +1,15 @@
+[project]
+name = "steinertree_ie"
+version = "0.1.0"
+description = "Finding Steiner tree in graph using the inclusion-exclusion method"
+authors = [
+  { name = "Mark Deaconu", email = "mark.deaconu@proton.me" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
