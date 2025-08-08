@@ -1,6 +1,6 @@
 
-from src.steinertree_ie.graph_classes import Vertex_collection
-
+from steinertree_ie.graph_classes import Vertex_collection
+from steinertree_ie.convolution_solvers import tree_combination_sum_fft, tree_combination_sum
 #The goal of this piece of code is to be able to solve the Simplified problem for one input
 
 #Simplified problem:
@@ -11,22 +11,8 @@ from src.steinertree_ie.graph_classes import Vertex_collection
 
 #FOR NOW THIS ONLY CONSIDERS THE UNIT WEIGHT STEINER TREE
 
-def tree_combination_sum(r1, r2, weight, bf):
-    #Divides the r1 simplified problem into one between two roots: r1 and it's neighbor r2
-    # Uses the number of branching walks starting from r1 of specific weights less than the max, as well as the same for r2. 
-    #Takes that info from the dynamic programming table and combines it in order to come up with the count of 'double rooted' branching walks
 
-    sum = 0
-    #theoretical concern: this seems wrong because it multiple counts the number of branching walks when w2 = 0
-    for w1 in range(weight+1):
-        w2 = weight - w1
-        
-        sum += bf(r1,w1) * bf(r2, w2)
-    
-    return(sum)
-
-
-def simplified_problem(root:int, max_weight:int, v: Vertex_collection, avoided_terminals):
+def simplified_problem(root:int, max_weight:int, v: Vertex_collection, avoided_terminals, fft):
 
     #solution for the simplified problem here. The vertex collection is simply the datastructure we use to encode relations in between vertices
     bf_table = dict()
@@ -59,8 +45,12 @@ def simplified_problem(root:int, max_weight:int, v: Vertex_collection, avoided_t
         try:
             return(bf_table[(curr_vert, weight)])
         except Exception:
-            bf_table[(curr_vert,weight)] = sum([tree_combination_sum(curr_vert,neighbor[0], weight-neighbor[1], bf) for neighbor in v[curr_vert].neighbors if neighbor[0] not in avoided_terminals and weight-neighbor[1]>0])
-            return(bf_table[(curr_vert,weight)])
+            if fft:
+                bf_table[(curr_vert,weight)] = sum([tree_combination_sum_fft(curr_vert,neighbor[0], weight-neighbor[1], bf) for neighbor in v[curr_vert].neighbors if neighbor[0] not in avoided_terminals and weight-neighbor[1]>0])
+                return(bf_table[(curr_vert,weight)])
+            else:
+                bf_table[(curr_vert,weight)] = sum([tree_combination_sum(curr_vert,neighbor[0], weight-neighbor[1], bf) for neighbor in v[curr_vert].neighbors if neighbor[0] not in avoided_terminals and weight-neighbor[1]>0])
+                return(bf_table[(curr_vert,weight)])
 
 
     #computes the 'pyramid' within the table that lets you climb to the desired table entry

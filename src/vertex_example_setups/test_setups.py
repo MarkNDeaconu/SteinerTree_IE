@@ -1,4 +1,4 @@
-from src.steinertree_ie.graph_classes import Vertex_collection
+from steinertree_ie.graph_classes import Vertex_collection
 
 import random
 
