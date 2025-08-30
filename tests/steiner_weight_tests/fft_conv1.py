@@ -6,7 +6,7 @@ import time
 #-----------setup-----------------
 v= Vertex_collection()
 
-make_grid_graph(v,5,5,6)
+make_grid_graph(v,5,5,4)
 
 start_time = time.time()
 
